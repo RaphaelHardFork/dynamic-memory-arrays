@@ -1,5 +1,7 @@
 # Dynamic memory arrays
 
+![](https://img.shields.io/badge/Audits-no%20review-red)
+
 _Library to use `pop` and `push` methods with memory arrays_
 
 ## Usage
@@ -8,7 +10,9 @@ _Library to use `pop` and `push` methods with memory arrays_
 forge install RaphaelHardFork/dynamic-memory-arrays
 ```
 
-```sol
+Exemple:
+
+```js
 import {DynamicalMemoryArray} from "dynamic-memory-arrays/DynamicalMemoryArray.sol";
 
 contract Any {
@@ -22,17 +26,22 @@ contract Any {
     returns (uint256[] memory hashes, bytes4[] memory hashesIds)
   {
     uint256 randomLength = uint256(keccak256(abi.encode(seed))) % 10;
+
+    // create arrays
     uint256 hashedArray = DynamicalMemoryArray.create(10);
     uint256 hashedIdsArray = DynamicalMemoryArray.create(10);
 
+    // fill arrays
     for (uint256 i; i <= randomLength; i++) {
         hashedArray.push(randomLength + i);
         hashedIdsArray.push(uint32(uint256(keccak256(abi.encode(i)))));
     }
 
+    // convert to an `uint256[] memory`
     hashes = hashedArray.toArray();
-    hashesIds = new bytes4[](hashedIdsArray.length());
 
+    // casting must be performed for others type
+    hashesIds = new bytes4[](hashedIdsArray.length());
     for (uint256 i; i < hashedIdsArray.length(); i++) {
         hashesIds[i] = bytes4(uint32(hashedIdsArray.at(i)));
     }
