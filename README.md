@@ -1,11 +1,43 @@
 # Dynamic memory arrays
 
-_Library to use `pop` and `push` method with memory arrays_
+_Library to use `pop` and `push` methods with memory arrays_
 
 ## Usage
 
 ```
-forge install ...
+forge install RaphaelHardFork/dynamic-memory-arrays
+```
+
+```sol
+import {DynamicalMemoryArray} from "dynamic-memory-arrays/DynamicalMemoryArray.sol";
+
+contract Any {
+  using DynamicalMemoryArray for uint256;
+
+  {...}
+
+  function createRandomArrays(uint256 seed)
+    external
+    pure
+    returns (uint256[] memory hashes, bytes4[] memory hashesIds)
+  {
+    uint256 randomLength = uint256(keccak256(abi.encode(seed))) % 10;
+    uint256 hashedArray = DynamicalMemoryArray.create(10);
+    uint256 hashedIdsArray = DynamicalMemoryArray.create(10);
+
+    for (uint256 i; i <= randomLength; i++) {
+        hashedArray.push(randomLength + i);
+        hashedIdsArray.push(uint32(uint256(keccak256(abi.encode(i)))));
+    }
+
+    hashes = hashedArray.toArray();
+    hashesIds = new bytes4[](hashedIdsArray.length());
+
+    for (uint256 i; i < hashedIdsArray.length(); i++) {
+        hashesIds[i] = bytes4(uint32(hashedIdsArray.at(i)));
+    }
+  }
+}
 ```
 
 ---
@@ -14,7 +46,7 @@ forge install ...
 
 _generated with `forge doc`_
 
-### DynamicalMemoryArray.sol
+### [DynamicalMemoryArray.sol](https://github.com/RaphaelHardFork/dynamic-memory-arrays/blob/main/contracts/DynamicalMemoryArray.sol)
 
 As dynamic arrays can grow as long as elements are added it is important
 to define a size limit of which the array cannot grow over.
